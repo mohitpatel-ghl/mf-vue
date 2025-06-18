@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "workspaces": [
+      "host-app-vue2",
+      "user-app-vue3",
+      "edit-user-app-vue3"
+    ]
+  }

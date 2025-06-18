@@ -1,0 +1,8 @@
+[
+    { "id": 1, "firstName": "Alice", "lastName": "Smith", "age": 28, "email": "alice@example.com" },
+    { "id": 2, "firstName": "Bob", "lastName": "Johnson", "age": 34, "email": "bob@example.com" },
+    { "id": 3, "firstName": "Charlie", "lastName": "Brown", "age": 22, "email": "charlie@example.com" },
+    { "id": 4, "firstName": "Diana", "lastName": "Prince", "age": 30, "email": "diana@example.com" },
+    { "id": 5, "firstName": "Eve", "lastName": "Adams", "age": 45, "email": "eve@example.com" }
+  ]
+  
