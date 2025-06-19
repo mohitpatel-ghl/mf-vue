@@ -5,6 +5,7 @@ This project demonstrates a **microfrontend setup** using **Webpack Module Feder
 - A **Vue 2 host app** (legacy) dynamically loads remote **Vue 3 apps (with TypeScript)** using **module federation runtime loading**.
 - Shared global **Vuex store**, **i18n** and **event-bus** are provided from the host.
 - Remotes are configured for both to **work standalone and dynamically mounted** in host.
+- Remotes are properly typed utilising full typescript functionality.
 - The remotes use host exposed `hostApp/store-adapter` to access the host's store.
 - Host can listen remote's event using host exposed **event-bus**
 - Remote apps can use host's **i18n**
