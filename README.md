@@ -57,7 +57,7 @@ In `host-app-vue2/src/store/store-adapter.js`:
 In `user-app-vue3`:
 In `edit-user-app-vue3`:
 
-using `remote host/state-adapter` composable.
+using `remote hostApp/state-adapter`.
 
 ---
 
