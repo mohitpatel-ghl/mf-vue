@@ -2,15 +2,16 @@
   <div class="user-list-container p-6 border-4 border-double border-green-400 rounded-xl bg-green-50 shadow-lg">
     <!-- This is where the remote Vue 3 app will be mounted -->
     <div ref="remoteAppContainer" class="mt-4 p-4 border-2 border-dashed border-blue-400 rounded-lg bg-blue-50">
-      <p v-if="loading" class="text-center text-blue-700 text-xl animate-pulse">Loading remote Vue 3 component...</p>
-      <p v-if="error" class="text-center text-red-600 text-xl">Error loading remote: {{ error.message }}</p>
     </div>
+
+    <p v-if="loading" class="text-center text-blue-700 text-xl animate-pulse">Loading remote Vue 3 component...</p>
+    <p v-if="error" class="text-center text-red-600 text-xl">Error loading remote: {{ error.message }}</p>
   </div>
 </template>
 
 <script>
 import { loadRemote } from '@module-federation/runtime';
-import { getCachedApp, setCachedApp } from '../utility/cached-app'; 
+import { getCachedApp, setCachedApp } from '../utility/cached-app';
 
 export default {
   name: 'UserList',
@@ -23,16 +24,15 @@ export default {
   },
   async mounted() {
     try {
-
-      // Dynamically load the remote module (the Vue 3 App.vue component definition).
-      const remoteModule = await loadRemote('userAppVue3/UserList');
-      const RemoteAppVue3Component = remoteModule.default || remoteModule;
-
       // Ensure the container exists
       const container = this.$refs.remoteAppContainer;
       if (!container) {
         throw new Error('Remote app container not found from remote user list app.');
       }
+
+      // Dynamically load the remote module (the Vue 3 App.vue component definition).
+      const remoteModule = await loadRemote('userAppVue3/UserList');
+      const RemoteAppVue3Component = remoteModule.default || remoteModule;
 
       // Load the `createApp` function from the Vue 3 remote's shared 'vue' instance.
       // This is crucial for correctly instantiating the Vue 3 component.
@@ -44,7 +44,7 @@ export default {
       // Create and mount the Vue 3 application instance.
       const app = createVue3App(RemoteAppVue3Component);
       this.vue3AppInstance = app; // Store the instance for later unmounting
-      app.mount(container);
+      await app.mount(container);
       console.log('Vue 3 user list app mounted directly in UserList.vue:', app);
 
       this.loading = false;

@@ -1,19 +1,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import { setHostStore } from './composables/useHostStore';
 
-declare global {
-  interface Window {
-    hostStore?: any;
-  }
+// this is done so that while dynamically mounting this app's components in host app, this mount should not get called.
+if (document.getElementById('app')) {
+  createApp(App).mount('#app');
 }
 
-console.log(window.hostStore, '🚀 Host store from window object');
-
-if (window.hostStore) {
-  setHostStore(window.hostStore);
-} else {
-  console.warn('⚠️ Host store not found on window');
-}
-
-createApp(App).mount('#app')
+export default App;

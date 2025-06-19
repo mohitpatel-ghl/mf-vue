@@ -1,32 +1,18 @@
 declare module 'hostApp/store-adapter' {
-    import { Ref } from 'vue';
+    import type { User } from '@/types';
   
-    interface User {
-      id: number;
-      [key: string]: any;
-    }
-  
-    export interface HostStoreState {
-      users: Ref<User[]>;
-      isLoading: Ref<boolean>;
-      error: Ref<string | null>;
-      userCount: Ref<number>;
-    }
-  
-    export interface HostStoreAPI extends HostStoreState {
+    const storeAdapter: {
+      users: User[];
+      isLoading: boolean;
+      error: string | null;
+      userCount: number;
       fetchUsers: () => Promise<void>;
-      addUser: (userData: Partial<User>) => Promise<void>;
+      fetchUserById: (id: number) => Promise<User>;
       updateUser: (payload: { id: number; userData: Partial<User> }) => Promise<void>;
-      deleteUser: (userId: number) => Promise<void>;
-    }
+      addUser: (userData: Omit<User, 'id'>) => Promise<void>;
+      deleteUser: (id: number) => Promise<void>;
+    };
   
-    const hostStore: HostStoreAPI;
-  
-    export default hostStore;
+    export default storeAdapter;
   }
   
-  declare global {
-    interface Window {
-      hostStore?: any;
-    }
-  }

@@ -73,6 +73,12 @@ module.exports = {
                 // Expose the store adapter
                 './store-adapter': './src/store/store-adapter.js',
             },
+            shared: {
+                vue: {
+                    eager: true,
+                    requiredVersion: deps.vue
+                }
+            }
         }),
         new HtmlWebpackPlugin({
             template: './public/index.html',

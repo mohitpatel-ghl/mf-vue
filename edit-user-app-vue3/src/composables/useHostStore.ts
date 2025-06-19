@@ -1,45 +1,43 @@
-// useHostStore.ts
-import { computed } from 'vue';
+// import { ref, watchEffect } from 'vue'
+// import type { User, ShellStore } from '@/types'
 
-let hostStore: any = null;
+// let hostStore: ShellStore | null = null
 
-export function setHostStore(store: any) {
-    console.log(store, '🚀 Setting host store');
-    hostStore = store;
-}
+// export function setHostStore(store: ShellStore) {
+//   hostStore = store
+// }
 
-export function useHostStore() {
-    console.log(window.hostStore, '🚀 Host store from window object');
-    if (window.hostStore) {
-        setHostStore(window.hostStore);
-    } else {
-        throw new Error('Host store is not set');
-    }
+// export function useHostStore() {
+//   if (!hostStore && window.hostStore) {
+//     setHostStore(window.hostStore as ShellStore)
+//   }
 
-    const users = computed(() => hostStore.state.users);
-    const isLoading = computed(() => hostStore.state.isLoading);
-    const error = computed(() => hostStore.state.error);
-    const userCount = computed(() => hostStore.getters.userCount);
+//   if (!hostStore) {
+//     throw new Error('hostStore not set')
+//   }
 
-    const fetchUserById = async (id: number) => {
-        return await hostStore.dispatch('fetchUserById', id);
-    };
+//   const users = ref<User[]>([])
+//   const isLoading = ref(false)
+//   const error = ref('')
+//   const userCount = ref(0)
 
-    const updateUser = async (payload: { id: number; userData: any }) => {
-        await hostStore.dispatch('updateUser', payload);
-    };
+//   // Watch reactive host store
+//   watchEffect(() => {
+//     users.value = hostStore!.users
+//     isLoading.value = hostStore!.isLoading
+//     error.value = hostStore!.error
+//     userCount.value = hostStore!.userCount
+//   })
 
-    const addUser = async (payload: { userData: any }) => {
-        await hostStore.dispatch('addUser', payload);
-    };
-
-    return {
-        users,
-        isLoading,
-        error,
-        userCount,
-        fetchUserById,
-        updateUser,
-        addUser
-    };
-}
+//   return {
+//     users,
+//     isLoading,
+//     error,
+//     userCount,
+//     fetchUsers: hostStore.fetchUsers,
+//     fetchUserById: hostStore.fetchUserById,
+//     deleteUser: hostStore.deleteUser,
+//     addUser: hostStore.addUser,
+//     updateUser: hostStore.updateUser,
+//   }
+// }

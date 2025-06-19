@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
+import UserList from '../pages/UserList.vue'
 
 Vue.use(VueRouter)
 
@@ -22,7 +23,7 @@ const routes = [
     path: '/user',
     name: 'user',
     // This route will load the UserApp remote module
-    component: () => import(/* webpackChunkName: "user" */ '../pages/UserList.vue')
+    component: UserList
   },
   {
     path: '/edit-user/:id',

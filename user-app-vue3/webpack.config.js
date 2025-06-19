@@ -8,16 +8,6 @@ module.exports = {
     mode: 'development',
     entry: './src/main.ts', // Entry point is now TypeScript
     target: 'web',
-    devServer: {
-        port: 8080,
-        hot: true,
-        static: {
-            directory: path.join(__dirname, 'dist'), // Serve static files from dist directory
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*", // Allow CORS for cross-origin loading
-        },
-    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
@@ -81,12 +71,18 @@ module.exports = {
             name: 'userAppVue3',
             filename: 'remoteEntry.js',
             remotes: {
-                // Declare the host as a remote so we can import its exposed modules
+                // Declare the host as a remote so we can import its exposed moduless
                 hostApp: 'hostApp@http://localhost:8080/remoteEntry.js',
             },
             exposes: {
                 './UserList': './src/pages/UserList.vue',
                 './vue': 'vue',
+            },
+            shared: {
+                vue: {
+                    eager: true,
+                    requiredVersion: deps.vue
+                }
             }
         }),
     ],
@@ -97,7 +93,6 @@ module.exports = {
         static: {
             directory: path.join(__dirname, 'dist'),
         },
-        compress: true,
         port: 8081,
         hot: true,
         headers: {

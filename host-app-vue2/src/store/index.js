@@ -19,16 +19,24 @@ export default new Vuex.Store({
     },
     UPDATE_USER(state, updatedUser) {
       const index = state.users.findIndex(user => user.id === updatedUser.id);
+
       if (index !== -1) {
-        // Merge updated fields while keeping other properties intact
-        state.users.splice(index, 1, {
-          ...state.users[index],
-          ...updatedUser
-        });
+        const existingUser = state.users[index];
+
+        const mergedUser = {
+          ...existingUser,
+          ...updatedUser,
+        };
+
+        state.users.splice(index, 1, mergedUser);
       }
     },
-    DELETE_USER(state, userId) {
-      state.users = state.users.filter(user => user.id !== userId);
+    DELETE_USER(state, id) {
+      const index = state.users.findIndex(u => u.id === id);
+      if (index !== -1) {
+        state.users.splice(index, 1);
+      }
+      console.log(state.users, 'freshly fetch deleted user')
       console.log('[Vuex Action] deleteUser: User deleted successfully', state.users);
     },
     SET_LOADING(state, status) {
@@ -44,10 +52,10 @@ export default new Vuex.Store({
         console.log('[Vuex Action] fetchUsers: Skipped — users already in store', state.users);
         return;
       }
-    
+
       commit('SET_LOADING', true);
       commit('SET_ERROR', '');
-    
+
       try {
         await new Promise(resolve => setTimeout(resolve, 500)); // simulate delay
         console.log('[Vuex Action] fetchUsers: Loaded dummy data');
@@ -67,12 +75,12 @@ export default new Vuex.Store({
       commit('SET_ERROR', '');
       try {
         await new Promise(resolve => setTimeout(resolve, 500));
-    
+
         const user = state.users.find(user => user.id === id);
         if (!user) {
           throw new Error(`User with ID ${id} not found`);
         }
-    
+
         console.log('[Vuex Action] fetchUserById: Found user', user);
         return user;
       } catch (error) {
@@ -82,7 +90,7 @@ export default new Vuex.Store({
       } finally {
         commit('SET_LOADING', false);
       }
-    },    
+    },
 
     async addUser({ commit }, userData) {
       commit('SET_LOADING', true);
@@ -107,7 +115,7 @@ export default new Vuex.Store({
       commit('SET_LOADING', true);
       commit('SET_ERROR', '');
       try {
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 500));
         const updatedUser = { id, ...userData };
         console.log('[Vuex Action] updateUser: Updated user', updatedUser);
         commit('UPDATE_USER', updatedUser);
@@ -123,7 +131,7 @@ export default new Vuex.Store({
       commit('SET_LOADING', true);
       commit('SET_ERROR', '');
       try {
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 500));
         console.log('[Vuex Action] deleteUser: Deleted user', userId);
         commit('DELETE_USER', userId);
       } catch (error) {

@@ -7,6 +7,12 @@ import { init } from '@module-federation/runtime'
 
 window.hostStore = store;
 
+//for providing a global event bus for communication between components
+Vue.prototype.$eventBus = new Vue();
+window.shellEventBus = Vue.prototype.$eventBus;
+// Expose the i18n instance globally for remote components to access translations
+window.shellI18n = i18n;
+
 // Initialize Module Federation runtime
 init({
   name: 'hostApp',

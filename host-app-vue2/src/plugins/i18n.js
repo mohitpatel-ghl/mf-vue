@@ -15,6 +15,8 @@ const messages = {
         editUserApp: {
             welcomeMsg: 'Edit User Page (Vue 3 Remote Component)',
             about: 'This page component in the Vue 3 remote is responsible for editing user details.',  
+            addUser: 'Add User',
+            editUser: 'Edit User'
         }
     }
 };

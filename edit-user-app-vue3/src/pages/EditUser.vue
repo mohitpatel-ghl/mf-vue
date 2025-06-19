@@ -1,6 +1,6 @@
 <template>
     <div class="edit-user-form p-6 bg-white rounded-lg shadow-md w-full max-w-xl mx-auto mt-10">
-        <h2 class="text-2xl font-semibold mb-4">Edit User</h2>
+        <h2 class="text-2xl font-semibold mb-4">{{ t('editUser') }}</h2>
 
         <div v-if="isLoading && !error && !notFound">Loading user data...</div>
         <div v-else-if="error">Error: {{ error }}</div>
@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useHostStore } from '../composables/useHostStore';
+import storeAdapter from 'hostApp/store-adapter';
 
 export default defineComponent({
     data() {
@@ -48,29 +48,25 @@ export default defineComponent({
             firstName: '',
             lastName: '',
             email: '',
-            age: null as number | null,
+            age: null as any,
             notFound: false,
             isLoading: false,
             error: null as any,
-            fetchUserById: null as any,
-            updateUser: null as any,
             successfulUpdate: false
         };
     },
     async mounted() {
-        const {
-            fetchUserById,
-            updateUser
-        } = useHostStore();
         this.isLoading = true;
-        this.fetchUserById = fetchUserById;
-        this.updateUser = updateUser;
 
         const route = (window as any).hostAppInstance?.$route;
         const userId = Number(route?.params?.id);
+        console.log(userId)
 
         try {
-            const user = await this.fetchUserById(userId);
+            if (storeAdapter.users.length === 0) {
+                await storeAdapter.fetchUsers();
+            }
+            const user = await storeAdapter.fetchUserById(userId);
             if (user) {
                 this.firstName = user.firstName;
                 this.lastName = user.lastName;
@@ -97,7 +93,7 @@ export default defineComponent({
             const userId = Number(route?.params?.id);
 
             try {
-                await this.updateUser({
+                await storeAdapter.updateUser({
                     id: userId,
                     userData: {
                         firstName: this.firstName,
@@ -108,6 +104,7 @@ export default defineComponent({
                 });
                 this.isLoading = false;
                 this.successfulUpdate = true;
+                router.push('/');
             } catch (err) {
                 this.error = err || 'Failed to update user';
                 this.isLoading = false;

@@ -1,6 +1,6 @@
 <template>
     <div class="add-user-form p-6 bg-white rounded-lg shadow-md w-full max-w-xl mx-auto mt-10">
-        <h2 class="text-2xl font-semibold mb-4">Add User</h2>
+        <h2 class="text-2xl font-semibold mb-4">{{ t('addUser') }}</h2>
 
         <div v-if="isLoading && !error">Saving user data...</div>
         <div v-else-if="error">Error: {{ error }}</div>
@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useHostStore } from '../composables/useHostStore';
+import storeAdapter from 'hostApp/store-adapter';
 
 export default defineComponent({
     data() {
@@ -50,16 +50,8 @@ export default defineComponent({
             age: null as number | null,
             isLoading: false,
             error: null as any,
-            addUser: null as any,
             successfulAdded: false
         };
-    },
-    async mounted() {
-        const {
-            addUser
-        } = useHostStore();
-        this.addUser = addUser;
-
     },
     methods: {
         async onSubmit() {
@@ -67,7 +59,7 @@ export default defineComponent({
             const router = (window as any).hostAppInstance?.$router;
 
             try {
-                await this.addUser({
+                await storeAdapter.addUser({
                     firstName: this.firstName,
                     lastName: this.lastName,
                     email: this.email,
@@ -76,6 +68,7 @@ export default defineComponent({
                 });
                 this.isLoading = false;
                 this.successfulAdded = true;
+                alert('User added successfully.')
             } catch (err) {
                 this.error = err || 'Failed to Add user';
                 this.isLoading = false;

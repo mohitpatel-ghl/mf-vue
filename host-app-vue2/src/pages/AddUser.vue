@@ -24,7 +24,7 @@
         console.log(this.$route.params, 'AddUser.vue mounted with route params:');
       try {
   
-        // Dynamically load the remote module (the Vue 3 remote app component definition).
+        // Dynamically load the remote module Vue 3 remote app component definition.
         const remoteModule = await loadRemote('editUserAppVue3/AddUser');
         const RemoteAppVue3Component = remoteModule.default || remoteModule;
   
