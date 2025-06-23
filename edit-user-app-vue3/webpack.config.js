@@ -8,16 +8,6 @@ module.exports = {
     mode: 'production',
     entry: './src/main.ts',
     target: 'web',
-    devServer: {
-        port: 8082,
-        hot: true,
-        static: {
-            directory: path.join(__dirname, 'dist'), 
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
-    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
