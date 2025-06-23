@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 require('dotenv').config();
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'production',
@@ -64,8 +65,8 @@ module.exports = {
             name: 'hostApp',
             filename: 'remoteEntry.js',
             remotes: {
-                userAppVue3: 'userAppVue3@@${process.env.USER_APP_URL}/remoteEntry.js',
-                editUserAppVue3: 'editUserAppVue3@${process.env.EDIT_USER_APP_URL}/remoteEntry.js',
+                userAppVue3: `userAppVue3@${process.env.USER_APP_URL}/remoteEntry.js`,
+                editUserAppVue3: `editUserAppVue3@${process.env.EDIT_USER_APP_URL}/remoteEntry.js`,
             },
             shared: {
                 vue: {
