@@ -6,7 +6,6 @@ import i18n from './plugins/i18n';
 import { init } from '@module-federation/runtime';
 import { EventBus } from './plugins/eventBus';
 import { createStoreAdapter } from './store/store-adapter';
-require('dotenv').config();
 
 console.log('USER_APP_URL:', process.env.USER_APP_URL);
 
