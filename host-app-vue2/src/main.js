@@ -8,6 +8,9 @@ import { EventBus } from './plugins/eventBus';
 import { createStoreAdapter } from './store/store-adapter';
 require('dotenv').config();
 
+console.log('USER_APP_URL:', process.env.USER_APP_URL);
+
+
 Vue.prototype.$eventBus = EventBus;
 
 // This step configures the environment to understand and load remote modules.
