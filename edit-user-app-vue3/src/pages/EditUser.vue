@@ -157,7 +157,7 @@ const onSubmit = async () => {
     
     setTimeout(() => {
         if (hostRouter && typeof hostRouter.push === 'function') {
-            hostRouter.push('/users');
+          hostRouter?.push?.('/users');
         } else {
             console.warn('Host router not available for redirection.');
         }
