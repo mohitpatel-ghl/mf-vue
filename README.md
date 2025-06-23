@@ -153,21 +153,21 @@ npm install
 **Terminal 1: Host App (Vue 2)**  
 ```bash
 cd host-app-vue2
-npm run serve
+npm run start
 # → http://localhost:8080
 ```
 
 **Terminal 2: User List App (Vue 3)**  
 ```bash
 cd user-app-vue3
-npm run serve
+npm run start
 # → http://localhost:8081
 ```
 
 **Terminal 3: Edit/Add User App (Vue 3)**  
 ```bash
 cd edit-user-app-vue3
-npm run serve
+npm run start
 # → http://localhost:8082
 ```
 

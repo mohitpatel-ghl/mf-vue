@@ -5,13 +5,14 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './src/main.ts', // Entry point is now TypeScript
     target: 'web',
     output: {
         path: path.resolve(__dirname, 'dist'),
+        clean: true,
         filename: '[name].[contenthash].js',
-        publicPath: 'http://localhost:8081/',
+        publicPath: 'auto',
     },
     module: {
         rules: [
@@ -70,10 +71,6 @@ module.exports = {
         new ModuleFederationPlugin({
             name: 'userAppVue3',
             filename: 'remoteEntry.js',
-            remotes: {
-                // Declare the host as a remote so we can import its exposed moduless
-                hostApp: 'hostApp@http://localhost:8080/remoteEntry.js',
-            },
             exposes: {
                 './UserList': './src/pages/UserList.vue',
                 './vue': 'vue',
@@ -82,15 +79,5 @@ module.exports = {
     ],
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json'], // Add .ts to extensions
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'dist'),
-        },
-        port: 8081,
-        hot: true,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
-    },
+    }
 };

@@ -5,7 +5,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './src/main.ts',
     target: 'web',
     devServer: {
@@ -21,7 +21,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
-        publicPath: 'http://localhost:8082/',
+        clean: true,
+        publicPath: 'auto',
     },
     module: {
         rules: [
@@ -88,16 +89,5 @@ module.exports = {
     ],
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json'], // Add .ts to extensions
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'dist'),
-        },
-        compress: true,
-        port: 8082,
-        hot: true,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
-    },
+    }
 };

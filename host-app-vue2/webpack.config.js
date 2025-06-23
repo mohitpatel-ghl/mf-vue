@@ -3,25 +3,16 @@ const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
+require('dotenv').config();
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './src/main.js',
     target: 'web',
-    devServer: {
-        port: 8080,
-        hot: true,
-        static: {
-            directory: path.join(__dirname, 'dist'), 
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*", 
-        },
-    },
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: 'http://localhost:8080/',
+        publicPath: 'auto',
     },
     resolve: {
         alias: {
@@ -67,12 +58,8 @@ module.exports = {
             name: 'hostApp',
             filename: 'remoteEntry.js',
             remotes: {
-                userAppVue3: 'userAppVue3@http://localhost:8081/remoteEntry.js',
-                editUserAppVue3: 'editUserAppVue3@http://localhost:8082/remoteEntry.js',
-            },
-            exposes: {
-                // Expose the store adapter
-                './store-adapter': './src/store/store-adapter.js',
+                userAppVue3: 'userAppVue3@@${process.env.USER_APP_URL}/remoteEntry.js',
+                editUserAppVue3: 'editUserAppVue3@${process.env.EDIT_USER_APP_URL}/remoteEntry.js',
             },
             shared: {
                 vue: {
