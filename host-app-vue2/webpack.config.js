@@ -16,8 +16,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'), 
-            'vue$': 'vue/dist/vue.esm.js' 
+            '@': path.resolve(__dirname, 'src'),
+            'vue$': 'vue/dist/vue.esm.js'
         },
         extensions: ['.js', '.vue'],
     },
@@ -31,8 +31,8 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    'vue-style-loader', 
-                    'css-loader',       
+                    'vue-style-loader',
+                    'css-loader',
                 ],
             },
             {
@@ -53,6 +53,12 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                USER_APP_URL: JSON.stringify(process.env.USER_APP_URL),
+                EDIT_USER_APP_URL: JSON.stringify(process.env.EDIT_USER_APP_URL),
+            },
+        }),
         new VueLoaderPlugin(),
         new ModuleFederationPlugin({
             name: 'hostApp',
