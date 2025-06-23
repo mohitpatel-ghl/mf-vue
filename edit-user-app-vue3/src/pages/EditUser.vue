@@ -51,12 +51,6 @@ import { ref, reactive, watch, inject } from 'vue';
 import { useHostStore } from '../composables/useHostStore';
 import  { HostRouterService, I18nService, User } from '@/types'; 
 
-const props = defineProps<{
-  id: number | string | null;
-}>();
-
-console.log(props.id, '^^^^^^^')
-
 // --- INJECT HOST UTILITIES ---
 const hostRouter = inject<HostRouterService>('hostRouter');
 if (!hostRouter) {
@@ -73,6 +67,9 @@ const t = (key: string): string => {
   return key;
 };
 
+const props = defineProps<{
+  id: number | string | null;
+}>();
 
 const {
   users, 
