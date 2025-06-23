@@ -1,6 +1,6 @@
 <template>
   <div class="edit-user-form p-6 bg-white rounded-lg shadow-md w-full max-w-xl mx-auto mt-10">
-    <h2 class="text-2xl font-semibold mb-4">{{ i18n.t('editUserApp.editUser') || 'Edit User' }}</h2>
+    <h2 class="text-2xl font-semibold mb-4">{{ t('editUserApp.editUser') || 'Edit User' }}</h2>
 
     <div v-if="loadingUser" class="mb-4 p-2 bg-blue-100 text-blue-800 rounded loading-message">
       Loading user data...
