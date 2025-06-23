@@ -2,10 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import i18n from './plugins/i18n'; 
-import { init } from '@module-federation/runtime'; 
+import i18n from './plugins/i18n';
+import { init } from '@module-federation/runtime';
 import { EventBus } from './plugins/eventBus';
 import { createStoreAdapter } from './store/store-adapter';
+require('dotenv').config();
 
 Vue.prototype.$eventBus = EventBus;
 
@@ -15,11 +16,13 @@ init({
   remotes: [
     {
       name: 'userAppVue3',
-      entry: 'http://localhost:8081/remoteEntry.js',
+      entry: `${process.env.USER_APP_URL}/remoteEntry.js`,
+
     },
     {
       name: 'editUserAppVue3',
-      entry: 'http://localhost:8082/remoteEntry.js', 
+      entry: `${process.env.EDIT_USER_APP_URL}/remoteEntry.js`,
+
     },
   ],
 });
@@ -36,13 +39,13 @@ new Vue({
   store,
   i18n,
   render: h => h(App),
-   // Provide the store adapter, EventBus, router, and i18n to all child components,
+  // Provide the store adapter, EventBus, router, and i18n to all child components,
   provide() {
     return {
       storeAdapter: storeAdapter,
       eventBus: EventBus,
       i18n: {
-        t: i18n.t.bind(i18n), 
+        t: i18n.t.bind(i18n),
         locale: i18n.locale,
       },
       hostRouter: {
@@ -56,7 +59,7 @@ new Vue({
     this.$store.dispatch('fetchUsers');
 
     EventBus.$on('storeUpdated', () => {
-        console.log('Host App: Store updated event received!');
+      console.log('Host App: Store updated event received!');
     });
 
     EventBus.$on('remote:updateUser', async ({ id, userData, callback }) => {
