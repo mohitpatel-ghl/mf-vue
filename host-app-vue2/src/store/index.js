@@ -36,8 +36,8 @@ export default new Vuex.Store({
       if (index !== -1) {
         state.users.splice(index, 1);
       }
-      console.log(state.users, 'freshly fetch deleted user')
       console.log('[Vuex Action] deleteUser: User deleted successfully', state.users);
+      this._vm.$eventBus.$emit('storeUpdated');
     },
     SET_LOADING(state, status) {
       state.isLoading = status;

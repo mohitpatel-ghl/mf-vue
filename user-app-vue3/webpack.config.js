@@ -77,12 +77,6 @@ module.exports = {
             exposes: {
                 './UserList': './src/pages/UserList.vue',
                 './vue': 'vue',
-            },
-            shared: {
-                vue: {
-                    eager: true,
-                    requiredVersion: deps.vue
-                }
             }
         }),
     ],

@@ -79,10 +79,6 @@ module.exports = {
         new ModuleFederationPlugin({
             name: 'editUserAppVue3',
             filename: 'remoteEntry.js',
-            remotes: {
-                // Declare the host as a remote so we can import its exposed modules
-                hostApp: 'hostApp@http://localhost:8080/remoteEntry.js',
-            },
             exposes: {
                 './EditUser': './src/pages/EditUser.vue',
                 './AddUser': './src/pages/AddUser.vue',

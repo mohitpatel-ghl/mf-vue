@@ -1,110 +1,215 @@
-# 🧩 Micro Frontend Architecture with Vue 2 Host and Vue 3 Remotes
 
-This project demonstrates a **microfrontend setup** using **Webpack Module Federation**, where:
+# 🧩 Vue 2 Host with Vue 3 Micro-Frontends (Module Federation)
 
-- A **Vue 2 host app** (legacy) dynamically loads remote **Vue 3 apps (with TypeScript)** using **module federation runtime loading**.
-- Shared global **Vuex store**, **i18n** and **event-bus** are provided from the host.
-- Remotes are configured for both to **work standalone and dynamically mounted** in host.
-- Remotes are properly typed utilising full typescript functionality.
-- The remotes use host exposed `hostApp/store-adapter` to access the host's store.
-- Host can listen remote's event using host exposed **event-bus**
-- Remote apps can use host's **i18n**
-- Loading messages and proper error logging.
-- Carefully designed for modularity and scalability, considering all errors
+This project demonstrates a **micro-frontend architecture** using **Vue 2 as the host application** and **Vue 3 applications as dynamically loaded remotes**, powered by **Webpack Module Federation**.  
+It showcases seamless cross-version communication, shared state management, and routing.
 
 ---
 
-## 🗂️ Project Structure
+## ✅ Features
 
-├── host-app-vue2/ # Vue 2 application (acts as shell)
-│ ├── src/
-│ │ ├── pages/ # Contains route-based dynamic containers
-│ │ └── main.js # Exposes global store via window
-├── user-app-vue3/ # Vue 3 + TS remote app 1 (User List and Delete)
-├── edit-user-app-vue3/ # Vue 3 + TS remote app 2 (User Edit and Add)
-└── README.md
+### 🔷 Vue 2 Host Application (`hostApp`)
 
----
+- **Global Reactive Store**  
+  Manages the central user data using **Vuex (Vue 2)**.
 
-## 🚀 Architecture Overview
+- **Global Store Exposure**  
+  Exposes a reactive global store (`users`, `isLoading`, `error`) to Vue 3 remotes via a **store-adapter** and `Vue.observable`.
 
-- All apps are carefully configured, considering future scalability, and proper modularity.
+- **Shared Services**  
+  Provides:
+  - A global **EventBus** for pub-sub communication
+  - **Vue Router** and **Vue I18n** instances  
+  These are shared with remotes via `provide`/`inject`.
 
-### 🧭 Host App (Vue 2)
+- **Routing**  
+  - `/users`: Loads Vue 3 **User List** via `UserList.vue`
+  - `/edit-user/:id`: Loads Vue 3 **Edit User** via `EditUser.vue`
+  - `/add-user`: Loads Vue 3 **Add User** via `AddUser.vue`
 
-- Acts as the entry point of the application.
-- Built independently using Vue 2 + Webpack + Vuex.
-- Provides shared global **Vuex store** by exposing store-adapter using module federation and **i18n** via the `window` object.
-- Uses **`@module-federation/runtime`** to dynamically load remote apps at route level using lazy loading.
-- Mounts remote apps into container components (`UserList.vue`, `EditUser.vue`, `AddUser.vue`).
-- provides functionality of **event-bus** which will be listening events from remote app, all events are in App.vue.
+- **API Simulation**  
+  Handles events from remotes to trigger **mock API** actions (e.g. update, add, delete users).
 
-### 🧩 Remote Apps (Vue 3 + TypeScript)
-
-- Built independently using Vue 3 + Webpack + TypeScript.
-- Expose the same-named components (e.g., `UserList`, `EditUser`) using Module Federation.
-- Consume the host’s shared store using module federation by **remote state-adapter**
-- Can emit events to update state, which will be listened on host app.
+- **Error Handling**  
+  Implements basic error handling and loading indicators.
 
 ---
 
-## 🔌 Host: Global Store Exposure
+### 🟢 Vue 3 Remote Applications (`userAppVue3`, `editUserAppVue3`)
 
-In `host-app-vue2/src/store/store-adapter.js`:
+- **Dynamic Loading**  
+  Loaded into the host at runtime using **Webpack Module Federation**.
 
-## Remore: Global Store Consumeing
+- **Reactive Store Consumption**  
+  Inject the `store-adapter` from host to listen to reactive state.
 
-In `user-app-vue3`:
-In `edit-user-app-vue3`:
+- **No Direct API Calls / State Mutations**  
+  - Emit events like `remote:updateUser`, `remote:addUser`, `remote:deleteUser`  
+  - Host listens, dispatches Vuex actions, updates state  
+  - Remotes react to updated store
 
-using `remote hostApp/state-adapter`.
-
----
-
-### Install Dependencies 
-
-- cd host-app-vue2 && npm install
-- cd ../user-app-vue3 && npm install
-- cd ../edit-user-app-vue3 && npm install
+- **Shared Service Consumption**  
+  Inject shared services: `EventBus`, `hostRouter`, `i18n`.
 
 ---
 
-### Run all apps
+### 🧩 `userAppVue3` (User List)
 
-# In separate terminals
-- cd host-app-vue2 && npm run start
-- cd user-app-vue3 && npm run start
-- cd edit-user-app-vue3 && npm run start
-
---- 
-
-### Module Federation Exposes
-
-## Host app
-
-// webpack.config.js
-exposes: {
-  './store-adapter': './src/store/store-adapter.js',
-}
-
-## userAppVue3
-
-// webpack.config.js
-exposes: {
-  './UserList': './src/components/UserList.vue',
-  './vue': 'vue',
-}
-
-## editUserAppVue3
-
-exposes: {
-  './EditUser': './src/components/EditUser.vue',
-  './AddUser': './src/components/AddUser.vue',
-  './vue': 'vue',
-}
+- Displays user list from host store
+- Reacts to store updates
+- "Edit" → navigates to `/edit-user/:id`
+- "Delete" → emits `remote:deleteUser` event
+- Custom modal used for confirmation
 
 ---
 
-### Host: Dynamic Loading via @module-federation/runtime
+### 🧩 `editUserAppVue3` (Edit/Add User Form)
 
-- **await loadRemote('userAppVue3/UserList');**
+- Receives `userId` via `inject` (null for add mode)
+- Fetches user from host's store
+- Renders editable form
+- On submit:
+  - Emits `remote:updateUser` or `remote:addUser` event
+  - Host updates store + simulates API
+  - Remote reflects update and navigates to `/users`
+
+---
+
+## 🗂 Project Structure
+
+```plaintext
+├── host-app-vue2/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   │   ├── Home.vue
+│   │   │   ├── About.vue
+│   │   │   ├── UserList.vue
+│   │   │   ├── EditUser.vue
+│   │   │   └── AddUser.vue
+│   │   ├── plugins/
+│   │   │   └── i18n.js
+│   │   │   └── eventBus.js
+│   │   ├── router/
+│   │   │   └── index.js
+│   │   ├── store/
+│   │   │   ├── index.js
+│   │   │   └── store-adapter.js
+│   │   ├── utility/
+│   │   │   ├── dummy-users.json
+│   │   ├── App.vue
+│   │   └── main.js
+│   ├── package.json
+│   └── webpack.config.js
+├── user-app-Vue3/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── composables/
+│   │   │   └── useHostStore.ts
+│   │   ├── pages/
+│   │   │   └── UserList.vue
+│   │   ├── App.vue
+│   │   └── main.ts
+│   ├── package.json
+│   └── webpack.config.js
+├── edit-user-app-vue3/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── composables/
+│   │   │   └── useHostStore.ts
+│   │   ├── App.vue
+│   │   └── main.ts
+│   ├── package.json
+│   └── webpack.config.js
+```
+
+---
+
+## 🚀 Setup and Running the Applications
+
+### Step 1: Install Dependencies
+
+```bash
+# Host App
+cd host-app-vue2
+npm install 
+
+# Remote App 1
+cd ../user-app-vue3
+npm install 
+
+# Remote App 2
+cd ../edit-user-app-vue3
+npm install 
+```
+
+### Step 2: Start Dev Servers (3 terminals)
+
+**Terminal 1: Host App (Vue 2)**  
+```bash
+cd host-app-vue2
+npm run serve
+# → http://localhost:8080
+```
+
+**Terminal 2: User List App (Vue 3)**  
+```bash
+cd user-app-vue3
+npm run serve
+# → http://localhost:8081
+```
+
+**Terminal 3: Edit/Add User App (Vue 3)**  
+```bash
+cd edit-user-app-vue3
+npm run serve
+# → http://localhost:8082
+```
+
+### Step 3: Access the App
+
+Open [http://localhost:8080](http://localhost:8080) in your browser. Use the navigation to:
+
+- View **User List** (`userAppVue3`)
+- Add a user (`editUserAppVue3` in add mode)
+- Edit a user (`editUserAppVue3` in edit mode)
+
+---
+
+## ⚙️ Interoperability Highlights
+
+- **`provide` / `inject` Sharing**  
+  - Vue 2 provides: `store-adapter`, `EventBus`, `i18n`, `router`
+  - Vue 3 remotes inject these in `setup()`
+
+- **`store-adapter.js`**  
+  - Wraps Vuex store using `Vue.observable`
+  - Reactively bridges Vue 2 store to Vue 3
+
+- **Event Communication**  
+  - Remotes emit events (`remote:updateUser`, etc.)
+  - Host listens and dispatches Vuex actions
+
+- **Routing**  
+  - All navigation handled by host router
+  - Remotes use injected `hostRouter.push(...)`
+
+- **Passing IDs**  
+  - Host extracts `:id` from route
+  - Provides it via `provide`
+  - Remote uses `inject` to get `userId`
+
+---
+
+## 🧪 Troubleshooting
+
+- Check **browser console** for errors
+- Ensure **remoteEntry.js** files load correctly
+- Restart servers after changes to:
+  - `webpack.config.js`
+  - `main.js`

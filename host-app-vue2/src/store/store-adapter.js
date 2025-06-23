@@ -1,73 +1,65 @@
-import { reactive } from 'vue';
+import Vue from 'vue'; 
+import store from './index'; 
+import { EventBus } from '../plugins/eventBus'; 
 
-let store;
+export function createStoreAdapter(vuexStore, eventBus) {
+  
+  const reactiveStore = Vue.observable({
+    users: [], 
+    isLoading: false, 
+    error: '', 
+  });
 
-const reactiveState = reactive({
-  users: [],
-  isLoading: false,
-  error: null,
-  userCount: 0,
-});
 
-export function initStoreBridge(hostStore) {
-  store = hostStore;
+  vuexStore.subscribe((mutation, state) => {
+    // Update the reactiveStore's properties based on Vuex state changes
+    reactiveStore.users = state.users;
+    reactiveStore.isLoading = state.isLoading;
+    reactiveStore.error = state.error;
+    // Notify consumers that the store has been updated.
+    eventBus.$emit('storeUpdated');
+  });
 
-  store.watch(
-    (state) => state.users,
-    (users) => {
-      reactiveState.users.length = 0;
-      reactiveState.users.push(...users);
-      reactiveState.userCount = users.length;
+  // Initialize reactiveStore with current Vuex state
+  reactiveStore.users = vuexStore.state.users;
+  reactiveStore.isLoading = vuexStore.state.isLoading;
+  reactiveStore.error = vuexStore.state.error;
+
+  return {
+    // Expose reactive state and getters directly
+    state: reactiveStore,
+    getters: {
+      allUsers: () => vuexStore.getters.allUsers,
+      userCount: () => vuexStore.getters.userCount,
+      isLoading: () => vuexStore.getters.isLoading,
+      error: () => vuexStore.getters.error,
     },
-    { immediate: true }
-  );
 
-  store.watch(
-    (state) => state.isLoading,
-    (loading) => {
-      reactiveState.isLoading = loading;
+    // Expose methods to dispatch actions to the Vuex store.
+    async fetchUsers() {
+      await vuexStore.dispatch('fetchUsers');
     },
-    { immediate: true }
-  );
+    async fetchUserById(id) {
+      return await vuexStore.dispatch('fetchUserById', id);
+    },
+    async addUser(userData) {
+      await vuexStore.dispatch('addUser', userData);
+    },
+    async updateUser(id, userData) {
+      await vuexStore.dispatch('updateUser', { id, userData });
+    },
+    async deleteUser(userId) {
+      await vuexStore.dispatch('deleteUser', userId);
+    },
 
-  store.watch(
-    (state) => state.error,
-    (error) => {
-      reactiveState.error = error;
-    },
-    { immediate: true }
-  );
+    // Expose the EventBus for generic pub-sub communication.
+    eventBus: {
+      on: (eventName, callback) => eventBus.$on(eventName, callback),
+      off: (eventName, callback) => eventBus.$off(eventName, callback),
+      emit: (eventName, payload) => eventBus.$emit(eventName, payload),
+    }
+  };
 }
 
-const storeAdapter = {
-  get users() {
-    return reactiveState.users;
-  },
-  get isLoading() {
-    return reactiveState.isLoading;
-  },
-  get error() {
-    return reactiveState.error;
-  },
-  get userCount() {
-    return reactiveState.userCount;
-  },
-
-  async fetchUsers() {
-    return await store?.dispatch('fetchUsers');
-  },
-  async fetchUserById(id) {
-    return await store?.dispatch('fetchUserById', id);
-  },
-  async addUser(user) {
-    return await store?.dispatch('addUser', user);
-  },
-  async updateUser(payload) {
-    return await store?.dispatch('updateUser', payload);
-  },
-  async deleteUser(id) {
-    return await store?.dispatch('deleteUser', id);
-  },
-};
-
-export default storeAdapter;
+// Export the initialized adapter instance directly.
+export default createStoreAdapter(store, EventBus);

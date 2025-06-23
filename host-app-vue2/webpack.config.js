@@ -7,14 +7,15 @@ const deps = require('./package.json').dependencies;
 module.exports = {
     mode: 'development',
     entry: './src/main.js',
+    target: 'web',
     devServer: {
         port: 8080,
         hot: true,
         static: {
-            directory: path.join(__dirname, 'dist'), // Serve static files from dist directory
+            directory: path.join(__dirname, 'dist'), 
         },
         headers: {
-            "Access-Control-Allow-Origin": "*", // Allow CORS for cross-origin loading
+            "Access-Control-Allow-Origin": "*", 
         },
     },
     output: {
@@ -24,8 +25,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'), // 👈 this is the fix
-            'vue$': 'vue/dist/vue.esm.js' // Use the full build of Vue
+            '@': path.resolve(__dirname, 'src'), 
+            'vue$': 'vue/dist/vue.esm.js' 
         },
         extensions: ['.js', '.vue'],
     },
@@ -33,14 +34,14 @@ module.exports = {
         rules: [
             {
                 test: /\.(png|jpe?g|gif|svg)$/i,
-                type: 'asset/resource', // ⬅️ this emits files to output dir and returns a URL
+                type: 'asset/resource',
             },
             { test: /\.vue$/, loader: 'vue-loader' },
             {
                 test: /\.css$/,
                 use: [
-                    'vue-style-loader', // 👈 injects styles into DOM
-                    'css-loader',       // 👈 interprets @import and url()
+                    'vue-style-loader', 
+                    'css-loader',       
                 ],
             },
             {
@@ -75,8 +76,14 @@ module.exports = {
             },
             shared: {
                 vue: {
+                    singleton: true,
                     eager: true,
                     requiredVersion: deps.vue
+                },
+                vuex: {
+                    singleton: true,
+                    requiredVersion: deps.vuex,
+                    eager: true
                 }
             }
         }),

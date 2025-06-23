@@ -9,6 +9,7 @@
     "start": "webpack serve --open"
   },
   "dependencies": {
+    "@module-federation/runtime": "^0.15.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
   },

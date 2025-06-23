@@ -43,8 +43,17 @@ export default {
 
       // Create and mount the Vue 3 application instance.
       const app = createVue3App(RemoteAppVue3Component);
-      this.vue3AppInstance = app; // Store the instance for later unmounting
-      await app.mount(container);
+
+      if (this._provided) {
+        Object.assign(app.config.globalProperties, this); // Expose Vue 2 instance to global properties in Vue 3 for fallbacks
+        Object.assign(app._context.provides, this._provided);
+        console.log('Successfully transferred provided context from Vue 2 host to Vue 3 app.');
+      } else {
+        console.warn('Vue 2 host instance does not have a _provided property. Context injection may fail.');
+      }
+
+      this.vue3AppInstance = app.mount(container); // Store the instance for later unmounting
+      
       console.log('Vue 3 user list app mounted directly in UserList.vue:', app);
 
       this.loading = false;

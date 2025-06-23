@@ -1,34 +1,45 @@
-// i18n interface
-export interface ShellI18n {
-  t(key: string, values?: any): string;
-  locale: string;
-}
-
-// Event Bus interface
-export interface ShellEventBus {
-  $emit(event: string, payload?: any): void;
-  $on(event: string, callback: Function): void;
-  $off(event: string, callback: Function): void;
-}
-
 // User Entity
 export interface User {
   id: number;
   lastName: string;
   firstName: string;
   email: string;
-  age: number | null;
+  age: number;
 }
 
-export interface ShellStore {
+export interface I18nService {
+  t: (key: string) => string;
+  locale: string;
+}
+
+export interface HostRouterService {
+  push: (location: string | object) => Promise<void>;
+  replace: (location: string | object) => Promise<void>;
+  currentRoute: any
+}
+
+export interface StoreAdapterState {
   users: User[];
   isLoading: boolean;
   error: string;
-  userCount: number;
+}
 
-  fetchUsers(): Promise<void>;
-  fetchUserById(id: number): Promise<void>;
-  deleteUser(id: number): Promise<void>;
-  addUser(user: Omit<User, 'id'>): Promise<void>;
-  updateUser(payload: { id: number; userData: Partial<User> }): Promise<void>;
+export interface StoreAdapter {
+  state: StoreAdapterState;
+  getters: {
+    allUsers: () => User[];
+    userCount: () => number;
+    isLoading: () => boolean;
+    error: () => string;
+  };
+  fetchUsers: () => Promise<void>;
+  fetchUserById: (id: number) => Promise<User | undefined>;
+  addUser: (userData: Omit<User, 'id'>) => Promise<void>;
+  updateUser: (id: number, userData: Partial<Omit<User, 'id'>>) => Promise<void>;
+  deleteUser: (userId: number) => Promise<void>;
+  eventBus: {
+    on: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback: Function) => void;
+    emit: (eventName: string, payload?: any) => void;
+  };
 }

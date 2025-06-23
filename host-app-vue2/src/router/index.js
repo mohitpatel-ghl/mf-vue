@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
-import UserList from '../pages/UserList.vue'
 
 Vue.use(VueRouter)
 
@@ -20,16 +19,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../pages/About.vue')
   }, 
   {
-    path: '/user',
-    name: 'user',
+    path: '/users',
+    name: 'users',
     // This route will load the UserApp remote module
-    component: UserList
+    component: () => import(/* webpackChunkName: "users" */ '../pages/UserList.vue').catch(err => {
+      console.error("Failed to load userAppVue3/UserList:", err);
+      return { render: h => h('div', 'Error loading User List App.') };
+    }),
+
   },
   {
     path: '/edit-user/:id',
     name: 'edit-user',
     // This route will load the EditUserApp remote module
-    component: () => import(/* webpackChunkName: "edit-user" */ '../pages/EditUser.vue')
+    component: () => import(/* webpackChunkName: "edit-user" */ '../pages/EditUser.vue'),
+    props: (route) => ({ id: Number(route.params.id) || null })
   },
   {
     path: '/add-user',
