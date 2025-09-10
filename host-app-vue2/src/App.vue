@@ -21,10 +21,6 @@ export default {
   async created() {
     await this.$store.dispatch('fetchUsers');
   },
-  mounted() {
-this.testSentryError();
-  }
-
 };
 </script>
 <style>

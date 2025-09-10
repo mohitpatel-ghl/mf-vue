@@ -47,8 +47,12 @@
 import { ref, inject } from 'vue';
 import { useHostStore } from '../composables/useHostStore'; 
 import { HostRouterService, I18nService, User } from '@/types';
+import { onMounted } from 'vue';
 
 
+onMounted(() => {
+    // throw new Error('Test error from AddUser.vue');
+});
 
 const firstName = ref('');
 const lastName = ref('');

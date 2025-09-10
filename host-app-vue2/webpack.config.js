@@ -3,13 +3,22 @@ const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+
 require('dotenv').config();
 const webpack = require('webpack');
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: './src/main.js',
     target: 'web',
+    devServer: {
+        port: 8080,
+        hot: true,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+    },
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
