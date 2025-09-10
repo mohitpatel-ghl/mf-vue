@@ -91,5 +91,19 @@ module.exports = {
                 BASE_URL: '/',
             },
         }),
+        sentryWebpackPlugin({
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: 'mohit-personal',
+            project: 'host-app',
+            debug: true,
+            errorHandler: (err) => {
+              console.warn("Sentry Error",err);
+            },
+            release: {
+              setCommits: {
+                auto: true,
+              },
+            },
+          }),
     ],
 };

@@ -34,7 +34,7 @@ Vue.config.productionTip = false;
 
 // Initialize Sentry before creating the Vue app
 Sentry.init({
-  dsn: 'https://32c56583f44fe6b590bb747a7a5f16ab@o4509507613425664.ingest.us.sentry.io/4509507615391744',
+  dsn: 'https://4b6a866bee3e5df2c6859eb002e8f802@o4509507613425664.ingest.us.sentry.io/4509995594874880',
   integrations: [
     Sentry.vueIntegration({
       Vue: Vue, // Pass the Vue constructor for Vue 2
