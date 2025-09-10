@@ -15,6 +15,9 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: 'auto',
     },
+    performance: {
+        hints: false
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
